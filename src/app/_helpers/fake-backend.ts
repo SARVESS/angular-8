@@ -5,12 +5,18 @@ import { delay, mergeMap, materialize, dematerialize } from 'rxjs/operators';
 
 import { User } from '@app/_models';
 
-const users: User[] = [{ id: 1, username: 'test', password: 'test', firstName: 'Test', lastName: 'User' }];
+const users: User[] = [{ id: 1, username: 'Bret', password: 'pass@123', email: 'Sincere@april.biz', }];
+
+
 
 @Injectable()
 export class FakeBackendInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const { url, method, headers, body } = request;
+
+        // this.http.get('https://jsonplaceholder.typicode.com/users' + '.json?cb=' + new Date().getTime()).subscribe((res) => {
+        //     let users = res;
+        // })
 
         // wrap in delayed observable to simulate server api call
         return of(null)
@@ -34,14 +40,13 @@ export class FakeBackendInterceptor implements HttpInterceptor {
         // route functions
 
         function authenticate() {
-            const { username, password } = body;
-            const user = users.find(x => x.username === username && x.password === password);
+            const { email, password } = body;
+            const user = users.find(x => x.email === email && x.password === password);
             if (!user) return error('Username or password is incorrect');
             return ok({
                 id: user.id,
                 username: user.username,
-                firstName: user.firstName,
-                lastName: user.lastName
+                email: user.email
             })
         }
 
